@@ -2,56 +2,70 @@ trigger:
   branches:
     include:
       - master
+      - production
+
+pr:
+  branches:
+    include:
+      - master
 
 pool:
-  vmImage: "ubuntu-latest"
+  vmImage: ubuntu-latest
 
 variables:
-  imageName: "intranetweb"
-  imageTag: "$(Build.BuildId)"
-  registryUrl: "192.168.3.142:5000"
-  appDirectory: "$(System.DefaultWorkingDirectory)"
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/production') }}:
+      - group: production-variables
+      - name: environmentName
+        value: "production"
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+      - group: staging-variables
+      - name: environmentName
+        value: "staging"
+  - name: NODE_ENV
+    value: "test"
+  - name: NODE_VERSION
+    value: "20.x"
+  - name: next_output_location
+    value: ".next"
 
 stages:
-  - stage: Build
-    displayName: "Build and Push"
+  - stage: BuildAndTest
     jobs:
-      - job: BuildAndPush
-        pool: docker-agent-pool
+      - job: BuildAndTest
         steps:
           - checkout: self
-
           - task: NodeTool@0
             inputs:
-              versionSpec: "18.x"
+              versionSpec: $(NODE_VERSION)
             displayName: "Install Node.js"
-
+          - script: npm ci
+            displayName: "Install Dependencies"
+          - script: npm run test
+            displayName: "Run Unit Tests"
+            env:
+              NODE_ENV: "test"
+              CI: true
+          - script: npm run build
+            displayName: "Build Application"
+            env:
+              NODE_ENV: "production"
+              NEXT_PUBLIC_API_URL_INTRANET: $(API_URL_INTRANET)
+              NEXT_PUBLIC_API_URL_SIGAS: $(API_URL_SIGAS)
           - script: |
-              npm ci
-              npx next build
-            displayName: "Build Next.js app"
-
-          - script: |
-              mkdir $(Build.ArtifactStagingDirectory)/next-build
-              cp -r $(appDirectory)/* $(Build.ArtifactStagingDirectory)/next-build
-              rm -rf $(Build.ArtifactStagingDirectory)/next-build/node_modules
-            displayName: "Copy project (excluding node_modules)"
-
-          - publish: $(Build.ArtifactStagingDirectory)/next-build
-            artifact: Build_Stage
-
-  - stage: UnitTest
-    displayName: "Unit Test"
-    jobs:
-      - job: UnitTestJob
-        pool: docker-agent-pool
-        steps:
-          - task: NodeTool@0
+              cp -R ./public $(next_output_location)/standalone/public
+              cp -R $(next_output_location)/static $(next_output_location)/standalone/.next/static
+            displayName: "Copy public and static folders to standalone"
+          - task: ArchiveFiles@2
             inputs:
-              versionSpec: "18.x"
-            displayName: "Install Node.js"
-
-          - script: |
-              npm install
-              npm run test
-            displayName: Unit Test Execution
+              rootFolderOrFile: "$(next_output_location)/standalone"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+              replaceExistingArchive: true
+            displayName: "Archive Standalone Build"
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "nextapp"
+              publishLocation: "Container"
+            displayName: "Publish Build Artifacts"

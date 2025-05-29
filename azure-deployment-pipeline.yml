@@ -1,0 +1,50 @@
+trigger:
+  branches:
+    include:
+      - master
+      - production
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/production') }}:
+      - group: production-variables
+      - name: environmentName
+        value: "production"
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+      - group: staging-variables
+      - name: environmentName
+        value: "staging"
+
+stages:
+  - stage: Deploy
+    displayName: "Deploy to ${{ variables.environmentName }}"
+    jobs:
+      - job: DeployToEnvironment
+        displayName: "Deploy to ${{ variables.environmentName }}"
+        timeoutInMinutes: 30
+        steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: "specific"
+              project: "34b905ea-4652-4483-8284-cab388520ee8"
+              pipeline: "14"
+              buildVersionToDownload: "latest"
+              downloadType: "single"
+              artifactName: "nextapp"
+              downloadPath: "$(System.ArtifactsDirectory)"
+            displayName: "Download Build Artifacts"
+
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: "Microsoft Azure (isafgobmx): #1475093 (405eed2d-7874-42f5-b63a-3c42efc19ead)"
+              appType: "webAppLinux"
+              appName: "dev-wa-intranet"
+              package: $(System.ArtifactsDirectory)/nextapp/*.zip
+              runtimeStack: "NODE|20-lts"
+            env:
+              NODE_ENV: $(environmentName)
+              NEXT_PUBLIC_API_URL_INTRANET: $(API_URL_INTRANET)
+              NEXT_PUBLIC_API_URL_SIGAS: $(API_URL_SIGAS)
+            displayName: "Deploy to Azure Web App"

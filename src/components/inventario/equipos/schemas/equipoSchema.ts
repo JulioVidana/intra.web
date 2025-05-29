@@ -14,6 +14,9 @@ export const equipoSchema = z.object({
   caracteristicas: z.string().min(1, { message: "Características requeridas" }).max(255, { message: "Características no puede tener más de 255 caracteres" }),
   ubicacion: z.string().min(1, { message: "Ubicación requerida" }).max(255, { message: "Ubicación no puede tener más de 255 caracteres" }),
   fechaBaja: z.date().optional(),
+  factura: z.string().max(255, { message: "Factura no puede tener más de 255 caracteres" }),
+  fechaFactura: z.date().optional(),
+  valor: z.string().optional(),
 });
 
 export type EquipoFormData = z.infer<typeof equipoSchema>;

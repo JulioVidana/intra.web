@@ -2,7 +2,8 @@ import {
   HomeIcon,
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
-  ListBulletIcon
+  ListBulletIcon,
+  FolderOpenIcon
 } from '@heroicons/react/24/outline'
 import { NavConfigType } from '@/types/nav-config'
 import { PATH_PAGE } from '@/routes/paths'
@@ -22,6 +23,8 @@ export const navConfig: NavConfigType = [
       { name: "Catálogo Equipos", path: PATH_PAGE.inventarioComputo.catalogoEquipo, invisible: true },
       { name: "Catálogo Status", path: PATH_PAGE.inventarioComputo.catalogoStatus, invisible: true },
       { name: "Listado Equipos", path: PATH_PAGE.inventarioComputo.listadoEquipos, icon: ListBulletIcon },
+      { name: "Asignaciones", path: PATH_PAGE.inventarioComputo.listadoAsignaciones, icon: ClipboardDocumentListIcon },
+      { name: "Resguardos", path: PATH_PAGE.inventarioComputo.listadoResguardos, icon: FolderOpenIcon },
     ],
   }
 ] 

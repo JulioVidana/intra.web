@@ -18,6 +18,12 @@ export interface Equipos {
     modifiedBy: string;
     created: string;
     modified: string;
+    isAsignado?: boolean;
+    empleadoAsignado?: string;
+    departamentoEmpleadoAsignado?: string;
+    factura?: string;
+    fechaFactura?: string;
+    valor?: number;
   }
   
   export interface EquipoPost{
@@ -37,4 +43,8 @@ export interface Equipos {
     created: string;
     modifiedBy: string;
     modified: string;
+    factura?: string;
+    fechaFactura?: string;
+    valor?: number;
   } 
+

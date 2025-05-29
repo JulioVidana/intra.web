@@ -35,7 +35,7 @@ export default function BaseModal({
           "max-w-2xl rounded-lg border shadow-lg",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-           "[&>button.absolute]:hidden",
+          "[&>button.absolute]:hidden",
           className,
         )}
         onEscapeKeyDown={(event) => {
@@ -67,7 +67,7 @@ export default function BaseModal({
           )}
         </DialogHeader>
 
-        <div className="py-2">{children}</div>
+        <div className="py-2 px-2 overflow-y-auto">{children}</div>
 
         {footer && <div className="mt-6 flex justify-end space-x-2 pt-4 border-t">{footer}</div>}
       </DialogContent>

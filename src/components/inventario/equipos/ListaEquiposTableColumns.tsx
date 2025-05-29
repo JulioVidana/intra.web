@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import ListaEquiposAcciones from "./ListaEquiposAcciones"
 import { Equipos } from "@/services/api/inventario-computo/models/Equipos"
-
+import { Badge } from "@/components/ui/badge"
 export const EquiposColumns: ColumnDef<Equipos>[] = [
   {
     id: "select",
@@ -45,6 +45,26 @@ export const EquiposColumns: ColumnDef<Equipos>[] = [
       </Button>
     ),
     cell: ({ row }) => <div className="uppercase font-medium">{row.getValue("clave")}</div>,
+  },
+  {
+    accessorKey: "statusNombre",
+    header: "Estado",
+    cell: ({ row }) => {
+      const status = row.getValue("statusNombre");
+      const statusColor = status === "Activo" ? "bg-green-100 text-green-800 hover:bg-green-100" : "bg-red-100 text-red-800 hover:bg-red-100";
+      return (
+        <Badge className={`capitalize ${statusColor}`}>{status?.toString()}</Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "isAsignado",
+    header: "Asignado",
+    cell: ({ row }) => {
+      const isAsignado = row.getValue("isAsignado");
+      const isAsignadoColor = isAsignado ? "bg-orange-100 text-orange-800 hover:bg-orange-100" : "bg-grey-100 text-grey-800 hover:bg-grey-100";
+      return <Badge className={`capitalize ${isAsignadoColor}`}>{isAsignado ? "Si" : "No"}</Badge>;
+    },
   },
   {
     id: "actions",

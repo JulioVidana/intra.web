@@ -9,6 +9,8 @@ import PageHeader from "@/components/layout/PageHeader"
 import { Button } from "@/components/ui/button"
 import { PATH_PAGE } from "@/routes/paths"
 import { useStatusEquipos } from "@/hooks/inventario/catStatus/useStatusEquipos"
+import BaseModal from "@/components/common/base-modal"
+import TipoEstatusForm from "@/components/inventario/catalogos/tipoEstatus/TipoEstatusForm"
 
   export default function CatStatusClient() {
   const {
@@ -19,7 +21,9 @@ import { useStatusEquipos } from "@/hooks/inventario/catStatus/useStatusEquipos"
     search,
     handleSearchChange,
     handlePageSizeChange,
-    handlePageChange
+    handlePageChange,
+    openModal,
+    setOpenModal
   } = useStatusEquipos()
 
   return (
@@ -41,7 +45,7 @@ import { useStatusEquipos } from "@/hooks/inventario/catStatus/useStatusEquipos"
           }
         ]}
         action={
-          <Button variant="default">
+          <Button variant="default" onClick={() => setOpenModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Nuevo
           </Button>
@@ -64,6 +68,9 @@ import { useStatusEquipos } from "@/hooks/inventario/catStatus/useStatusEquipos"
         />
 
       </Card>
+      <BaseModal open={openModal} onClose={() => setOpenModal(false)} title="Nuevo Equipo">
+        <TipoEstatusForm onSuccess={() => setOpenModal(false)} />
+      </BaseModal>
     </div>
   )
 } 

@@ -15,5 +15,8 @@ export function mapEquipoToFormData(equipo: Equipos): EquipoFormData {
     caracteristicas: equipo.caracteristicas ?? "",
     ubicacion: equipo.ubicacion ?? "",
     fechaBaja: equipo.fechaBaja ? new Date(equipo.fechaBaja) : undefined,
+    factura: equipo.factura ?? "",
+    fechaFactura: equipo.fechaFactura ? new Date(equipo.fechaFactura) : undefined,
+    valor: equipo.valor ? String(equipo.valor) : undefined,
   };
 }

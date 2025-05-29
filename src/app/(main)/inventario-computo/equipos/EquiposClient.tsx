@@ -12,7 +12,8 @@ import { useEquipos } from "@/hooks/inventario/equipos/useEquipos";
 import { EquiposColumns as columns } from "@/components/inventario/equipos/ListaEquiposTableColumns";
 import BaseModal from "@/components/common/base-modal";
 import EquipoForm from "@/components/inventario/equipos/EquipoForm";
-
+import EquipoDetails from "@/components/inventario/equipos/EquipoDetails";
+import { useCreateEditEquipos } from "@/hooks/inventario/equipos/useCreateEditEquipos";
 export default function EquiposClient() {
   const {
     equiposData,
@@ -26,7 +27,7 @@ export default function EquiposClient() {
   } = useEquipos();
 
   const [openModal, setOpenModal] = useState(false);
-
+  const { openModalDetails, setOpenModalDetails, equipoDetails, onRowClick } = useCreateEditEquipos();
   return (
     <>
       <PageHeader
@@ -54,12 +55,17 @@ export default function EquiposClient() {
           totalItems={totalItems}
           handlePageSizeChange={handlePageSizeChange}
           handlePageChange={handlePageChange}
+          onRowClick={onRowClick}
           dense
         />
       </Card>
 
       <BaseModal open={openModal} onClose={() => setOpenModal(false)} title="Dar de alta equipo">
         <EquipoForm onSuccess={() => setOpenModal(false)} />
+      </BaseModal>
+
+      <BaseModal open={openModalDetails} onClose={() => setOpenModalDetails(false)} title="Detalles del equipo">
+        {equipoDetails && <EquipoDetails equipo={equipoDetails} />}
       </BaseModal>
     </>
   );

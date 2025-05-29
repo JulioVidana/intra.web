@@ -2,25 +2,12 @@ import { render, screen } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import EquipoForm from "@/components/inventario/equipos/EquipoForm";
 import { useCreateEditEquipos } from "@/hooks/inventario/equipos/useCreateEditEquipos";
-import { useTipoEquipos } from "@/hooks/inventario/catInventario/useTipoEquipos";
-import { useStatusEquipos } from "@/hooks/inventario/catStatus/useStatusEquipos";
 
 jest.mock("@/hooks/inventario/equipos/useCreateEditEquipos");
-jest.mock("@/hooks/inventario/catInventario/useTipoEquipos");
-jest.mock("@/hooks/inventario/catStatus/useStatusEquipos");
 
 const mockUseCreateEditEquipos = useCreateEditEquipos as jest.Mock;
-const mockUseTipoEquipos = useTipoEquipos as jest.Mock;
-const mockUseStatusEquipos = useStatusEquipos as jest.Mock;
 
 describe("EquipoForm", () => {
-  const tipoEquiposMock = [{ id: 1, nombre: "Laptop" }];
-  const statusEquiposMock = [{ id: 2, nombre: "Activo" }];
-
-  beforeEach(() => {
-    mockUseTipoEquipos.mockReturnValue({ tipoEquiposData: tipoEquiposMock });
-    mockUseStatusEquipos.mockReturnValue({ statusEquiposData: statusEquiposMock });
-  });
 
   const Wrapper = ({ isEdit, isPending }: { isEdit: boolean; isPending: boolean }) => {
     mockUseCreateEditEquipos.mockReturnValue({
@@ -29,6 +16,8 @@ describe("EquipoForm", () => {
       handleSubmit: (fn: any) => fn,
       isPending,
       isEdit,
+      tipoEquiposOptions : [{ id: 1, nombre: "Laptop" }],
+      statusEquiposOptions : [{ id: 2, nombre: "Activo" }]
     });
 
     return <EquipoForm />;

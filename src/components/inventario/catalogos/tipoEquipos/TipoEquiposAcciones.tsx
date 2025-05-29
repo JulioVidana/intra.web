@@ -17,11 +17,6 @@ export default function TipoEquiposAcciones({tipoEquipo}:{tipoEquipo:TipoEquipos
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-      <DropdownMenuItem onClick={() => navigator.clipboard.writeText(tipoEquipo.nombre)}>
-        Copiar Nombre
-      </DropdownMenuItem>
-      <DropdownMenuSeparator />
       <DropdownMenuItem onClick={()=>setOpenModal(true)}>
         <Pencil className="mr-2 h-4 w-4" />
         Editar

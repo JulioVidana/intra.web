@@ -3,15 +3,14 @@
 
 import FormProvider from "@/components/hook-form/FormProvider";
 import RHFTextField from "@/components/hook-form/RHFTextField";
-import { useTipoEquipos } from "@/hooks/inventario/catInventario/useTipoEquipos";
 import { useCreateEditEquipos } from "@/hooks/inventario/equipos/useCreateEditEquipos";
 import RHFCombobox from "@/components/hook-form/RHFCombobox";
 import RHFDatePicker from "@/components/hook-form/RFHDatePicker";
-import { useStatusEquipos } from "@/hooks/inventario/catStatus/useStatusEquipos";
 import { Button } from "@/components/ui/button";
 import { Equipos } from "@/services/api/inventario-computo/models/Equipos";
 import { mapEquipoToFormData } from "@/services/api/inventario-computo/mappers/mapEquiposToForm";
 import RHFTextArea from "@/components/hook-form/RHFTextArea";
+
 type Props = {
   onSuccess?: () => void;
   initialValues?: Equipos;
@@ -20,22 +19,18 @@ type Props = {
 export default function EquipoForm({ onSuccess,initialValues }: Props) {
 
   const initialValuesForm = initialValues ? mapEquipoToFormData(initialValues) : undefined;
+  
+  const { 
+    methods, 
+    onSubmit, 
+    handleSubmit, 
+    isPending, 
+    isEdit, 
+    tipoEquiposOptions, 
+    statusEquiposOptions 
+  } = useCreateEditEquipos(onSuccess,initialValuesForm);
 
-  const { methods, onSubmit, handleSubmit, isPending, isEdit } = useCreateEditEquipos(onSuccess,initialValuesForm);
-  const { tipoEquiposData } = useTipoEquipos();
-  const { statusEquiposData } = useStatusEquipos();
-
-  const tipoEquiposOptions = tipoEquiposData.map((tipoEquipo) => ({
-    value: tipoEquipo.id.toString(),
-    label: tipoEquipo.nombre || ''
-  }));
-
-  const statusEquiposOptions = statusEquiposData.map((statusEquipo) => ({
-    value: statusEquipo.id.toString(),
-    label: statusEquipo.nombre || ''
-  }));
-
-
+  
   return (
 <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
@@ -59,18 +54,40 @@ export default function EquipoForm({ onSuccess,initialValues }: Props) {
         />
       </div>
 
-      {/* Inputs de texto */}
       <RHFTextField
         label="Clave SIIF"
         name="claveSIIF"
         labelVariant="stacked"
         maxLength={255}
       />
-       <RHFDatePicker
+
+      
+      <RHFTextField
+        label="Numero de Factura"
+        name="factura"
+        labelVariant="stacked"
+        maxLength={255}
+      />
+
+      <RHFDatePicker
+        label="Fecha de Factura"
+        name="fechaFactura"
+      />
+
+      <RHFTextField
+        label="Valor del Equipo"
+        name="valor"
+        labelVariant="stacked"
+        maxLength={255}
+        numberVariant="decimal"
+      />
+      {methods.watch("statusId") === '2' && (
+        <RHFDatePicker
           name="fechaBaja"
           label="Fecha de baja"
           yearPicker={true}
         />
+      )}
      <div className="md:col-span-2">
       <RHFTextField
         label="Descripción"
@@ -112,8 +129,6 @@ export default function EquipoForm({ onSuccess,initialValues }: Props) {
       />
       </div>
       
-
-      {/* Fecha (toma toda la fila en pantallas medianas+) */}
       
     </div>
 

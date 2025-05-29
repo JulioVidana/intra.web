@@ -15,7 +15,12 @@ class ApiClient {
 
   getInstance = (baseUrl?: string, isMedia?: boolean) => {
 
-    const headers: any = {}
+    const headers: any = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true'
+    }
 
     if (isMedia) {
       headers['Content-Type'] = 'multipart/form-data'
@@ -24,7 +29,7 @@ class ApiClient {
     const instance = axios.create({
       baseURL: baseUrl || this.defaultBaseUrl,
       headers: headers,
-      withCredentials:true
+      withCredentials: true
     })
 
     instance.interceptors.response.use(

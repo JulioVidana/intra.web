@@ -20,6 +20,8 @@ export const PATH_PAGE = {
     catalogoEquipo: '/inventario-computo/catalogo/equipos',
     catalogoStatus: '/inventario-computo/catalogo/status',
     listadoEquipos: '/inventario-computo/equipos',
-    catalogo: '/inventario-computo/catalogo'
+    catalogo: '/inventario-computo/catalogo',
+    listadoAsignaciones: '/inventario-computo/asignaciones',
+    listadoResguardos: '/inventario-computo/resguardos'
   }
 }

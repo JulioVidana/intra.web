@@ -33,10 +33,16 @@ export const TipoEstatusTableColumns: ColumnDef<TipoEstatus>[] = [
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const tipoEquipo = row.original;
+        const tipoEstatus = row.original;
   
         return (
-          <TipoEstatusAcciones tipoEquipo={tipoEquipo} />
+          <>
+          <div className="min-h-7">
+          {tipoEstatus.id !== 1 && tipoEstatus.id !== 2 && tipoEstatus.id !== 3 && (
+            <TipoEstatusAcciones tipoEstatus={tipoEstatus} />
+          )}
+          </div>
+          </>
         );
       },
     },

@@ -21,6 +21,7 @@ interface ComboboxProps {
   className?: string
   /** Set to true when used inside another popover */
   nested?: boolean
+  onInputChange?: (value: string) => void
 }
 
 export function Combobox({
@@ -31,6 +32,7 @@ export function Combobox({
   disabled,
   className,
   nested = false,
+  onInputChange,
   ...props
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
@@ -44,6 +46,11 @@ export function Combobox({
     }
   }, [])
 
+  React.useEffect(() => {
+    if (onInputChange) {
+      onInputChange(inputValue.toLowerCase())
+    }
+  }, [inputValue])
 
   React.useEffect(() => {
     if (!open) {
@@ -123,7 +130,7 @@ export function Combobox({
         >
           <Command shouldFilter={false}>
             <CommandInput
-              placeholder={`Search ${optionLabel}`}
+              placeholder={`Buscar ${optionLabel}`}
               className="h-9"
               value={inputValue}
               onValueChange={setInputValue}

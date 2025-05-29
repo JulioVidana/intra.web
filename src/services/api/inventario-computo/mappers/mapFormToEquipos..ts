@@ -20,6 +20,9 @@ export function mapFormToEquipos(data: EquipoFormData): EquipoPost {
     created: new Date().toISOString(),
     modifiedBy: "1",
     modified: new Date().toISOString(),
+    factura: data.factura,
+    fechaFactura: data.fechaFactura ? data.fechaFactura.toISOString() : undefined,
+    valor: data.valor ? parseFloat(data.valor.toString()) : undefined,
   };
 
 

@@ -1,5 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import EquiposClient from '@/app/(main)/inventario-computo/equipos/EquiposClient'
+import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
+import renderWithClient from '../../../../__mock__/QueryClientProvider';
+
+
+
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -60,20 +66,21 @@ jest.mock('@/components/layout/Breadcrumbs', () => () => (
 
 describe('EquiposClient', () => {
   it('renderiza el encabezado y botón "Nuevo"', () => {
-    render(<EquiposClient />)
-    expect(screen.getByText('Listado de Equipos')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /nuevo/i })).toBeInTheDocument()
-  })
+    renderWithClient(<EquiposClient />);
+    expect(screen.getByText('Listado de Equipos')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /nuevo/i })).toBeInTheDocument();
+  });
 
   it('abre el modal al hacer clic en "Nuevo"', () => {
-    render(<EquiposClient />)
-    fireEvent.click(screen.getByRole('button', { name: /nuevo/i }))
-    expect(screen.getByText('Formulario equipo')).toBeInTheDocument()
-  })
+    renderWithClient(<EquiposClient />);
+    fireEvent.click(screen.getByRole('button', { name: /nuevo/i }));
+    expect(screen.getByText('Formulario equipo')).toBeInTheDocument();
+  });
 
   it('renderiza la tabla y el campo de búsqueda', () => {
-    render(<EquiposClient />)
-    expect(screen.getByText('DataTable')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('Buscar...')).toBeInTheDocument()
-  })
-})
+    renderWithClient(<EquiposClient />);
+    expect(screen.getByText('DataTable')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Buscar...')).toBeInTheDocument();
+  });
+});
+

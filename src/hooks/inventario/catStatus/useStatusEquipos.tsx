@@ -14,6 +14,7 @@ export function useStatusEquipos() {
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0, pageNumber: 0, pageSize: 10 })
   const [search, setSearch] = useState<string>('')
   const debouncedSearch = useDebounce(search, 200); 
+  const [openModal, setOpenModal] = useState(false)
 
   const { data, isLoading, error } = useQuery<GetTipoEstatusResponse, Error>({
     queryKey: ["catStatus", pagination.pageNumber, pagination.pageSize, debouncedSearch],
@@ -54,6 +55,8 @@ const statusEquiposData =  data?.data || [] as TipoEstatus[]
     handlePageChange,
     isLoading,
     statusEquiposData,
-    search
+    search,
+    openModal,
+    setOpenModal
   }
 }

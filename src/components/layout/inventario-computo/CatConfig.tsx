@@ -4,8 +4,8 @@ import { Tag, Package } from "lucide-react"
 export const catalogos: Catalogos[] = [
     {
       id: "status",
-      name: "Estados",
-      description: "Catálogo de estados posibles para equipos",
+      name: "Estatus",
+      description: "Catálogo de estatus posibles para equipos",
       itemCount: 4,
       icon: <Tag className="w-8 h-8 mr-2 text-primary" />
     },

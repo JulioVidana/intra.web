@@ -15,5 +15,8 @@ export const getEquipoDefaultValues = (
   ubicacion: "",
   observaciones: "",
   fechaBaja: undefined,
+  factura: "",
+  fechaFactura: undefined,
+  valor: undefined,
   ...overrides,
 });

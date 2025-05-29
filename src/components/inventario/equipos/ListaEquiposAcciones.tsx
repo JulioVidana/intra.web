@@ -8,15 +8,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
 import { Equipos } from "@/services/api/inventario-computo/models/Equipos";
 import EquipoForm from "@/components/inventario/equipos/EquipoForm"; 
 import { useCreateEditEquipos } from "@/hooks/inventario/equipos/useCreateEditEquipos";
+import EquipoDetails from "./EquipoDetails";
 export default function ListaEquiposAcciones({ equipo }: { equipo: Equipos }) {
  
 
-  const { onDelete, openModal, setOpenModal, openModalDelete, setOpenModalDelete } = useCreateEditEquipos();
+  const { onDelete, openModal, setOpenModal, openModalDelete, setOpenModalDelete, openModalDetails, setOpenModalDetails } = useCreateEditEquipos();
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -32,11 +33,6 @@ export default function ListaEquiposAcciones({ equipo }: { equipo: Equipos }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(equipo.descripcion)}>
-            Copiar Descripción
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleOpenModal}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar
@@ -44,6 +40,10 @@ export default function ListaEquiposAcciones({ equipo }: { equipo: Equipos }) {
           <DropdownMenuItem onClick={() => setOpenModalDelete(true)}>
             <Trash2 className="mr-2 h-4 w-4" />
             Eliminar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenModalDetails(true)}>
+            <Eye className="mr-2 h-4 w-4" />
+            Ver Detalles
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -59,6 +59,9 @@ export default function ListaEquiposAcciones({ equipo }: { equipo: Equipos }) {
           <Button onClick={() => onDelete.mutate(equipo.id)}>Eliminar</Button>
         </div>
       }>
+      </BaseModal>
+      <BaseModal open={openModalDetails} onClose={() => setOpenModalDetails(false)} title={`Detalles del equipo ${equipo.descripcion}`}>
+        <EquipoDetails equipo={equipo} />
       </BaseModal>
     </>
   );
