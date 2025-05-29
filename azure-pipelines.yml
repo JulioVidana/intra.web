@@ -1,0 +1,57 @@
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  imageName: "intranetweb"
+  imageTag: "$(Build.BuildId)"
+  registryUrl: "192.168.3.142:5000"
+  appDirectory: "$(System.DefaultWorkingDirectory)"
+
+stages:
+  - stage: Build
+    displayName: "Build and Push"
+    jobs:
+      - job: BuildAndPush
+        pool: docker-agent-pool
+        steps:
+          - checkout: self
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "18.x"
+            displayName: "Install Node.js"
+
+          - script: |
+              npm ci
+              npx next build
+            displayName: "Build Next.js app"
+
+          - script: |
+              mkdir $(Build.ArtifactStagingDirectory)/next-build
+              cp -r $(appDirectory)/* $(Build.ArtifactStagingDirectory)/next-build
+              rm -rf $(Build.ArtifactStagingDirectory)/next-build/node_modules
+            displayName: "Copy project (excluding node_modules)"
+
+          - publish: $(Build.ArtifactStagingDirectory)/next-build
+            artifact: Build_Stage
+
+  - stage: UnitTest
+    displayName: "Unit Test"
+    jobs:
+      - job: UnitTestJob
+        pool: docker-agent-pool
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "18.x"
+            displayName: "Install Node.js"
+
+          - script: |
+              npm install
+              npm run test
+            displayName: Unit Test Execution
