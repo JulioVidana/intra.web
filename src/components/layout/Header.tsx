@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 
 export default function Header() {
-  const { toggleSidebar, handleLogout } = useMainHeader()
+  const { toggleSidebar, handleLogout, user } = useMainHeader()
   const [search, setSearch] = useState("")
 
   return (
@@ -31,7 +31,9 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <AccountPopover handleLogout={handleLogout} />
+          {user && (
+            <AccountPopover handleLogout={handleLogout} user={user} />
+          )}
         </div>
       </div>
     </header>

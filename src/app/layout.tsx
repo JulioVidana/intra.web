@@ -25,12 +25,12 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
-        {/* <Providers> */}
+         <Providers>
         <ReactQueryProvider>
           {children}
         </ReactQueryProvider>
         <Toaster />
-        {/* </Providers> */}
+        </Providers>
       </body>
     </html>
   )

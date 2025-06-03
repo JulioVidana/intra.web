@@ -36,25 +36,11 @@ class ApiClient {
       (response) => response,
       (error) => {
         if (error.response && error.response.status === 401) {
-
-          const isTokenExpired = error.response.data?.message?.includes('expired') ||
-            error.response.data?.error?.includes('expired') ||
-            error.response.data?.code === 'token_expired';
-
-          if (isTokenExpired) {
-
-
-
-            if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
-              window.location.href = '/auth/login'
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+              window.location.href = '/login'
             }
-          } else {
-
-            console.error('Authentication error:', error.response.data)
-
-           toast.error('No se tienen permisos para esta pagina')
           }
-        }
+
         return Promise.reject(error)
       }
     )

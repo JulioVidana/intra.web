@@ -1,101 +1,58 @@
 "use client"
 
 import type React from "react"
-import { API } from "@/services/api/API"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { LockKeyhole, Mail } from "lucide-react"
-import { AuthenticationRequest } from "@/services/api/auth/schema/AuthenticateRequest"
-import { toast } from "sonner"
+import useAuth from "@/hooks/auth/useAuth"
+import RHFTextField from "../hook-form/RHFTextField"
+import FormProvider from "@/components/hook-form/FormProvider";
+import { AlertCircleIcon, LockKeyhole, Mail } from "lucide-react"
+import { Alert, AlertTitle, AlertDescription } from "../ui/alert"
 
 export function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const datos:AuthenticationRequest={
-      email,
-      password
-    }
-    try {
-      const data = await API.auth.authenticate(datos);
-
-      console.log("Login exitoso:", data);
-
-      router.push("/");
-    } catch (error:any) {
-      toast(`${error.message}`)
-      console.error("Error al iniciar sesión:", error);
-      alert(error.message || "Ocurrió un error al iniciar sesión"); 
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { isLoginLoading, handleSubmit, methods, onSubmit, error } = useAuth()
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <div className="relative">
-          <Label htmlFor="email" className="text-sm font-medium">
-            Correo electrónico
-          </Label>
-          <div className="relative mt-1">
-            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="email"
-              type="email"
-              placeholder="nombre@ejemplo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="pl-10"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="relative">
-          <Label htmlFor="password" className="text-sm font-medium">
-            Contraseña
-          </Label>
-          <div className="relative mt-1">
-            <LockKeyhole className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-10"
-              required
-            />
-          </div>
+    <div className="flex flex-col gap-y-4">
+      {error && <Alert variant="destructive" className="bg-destructive/5 border-destructive/20 text-destructive">
+        <AlertCircleIcon />
+        <AlertTitle>Error al iniciar sesión</AlertTitle>
+        <AlertDescription>
+          {error}
+        </AlertDescription>
+      </Alert>}
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col gap-y-4">
+        <RHFTextField
+          id="email"
+          label="Correo electrónico"
+          name="email"
+          placeholder="Correo.ejemplo@gmail.com"
+          labelVariant="stacked"
+          maxLength={255}
+          icon={<Mail />}
+        />
+        <RHFTextField
+          id="password"
+          label="Contraseña"
+          name="password"
+          placeholder="••••••••"
+          labelVariant="stacked"
+          maxLength={255}
+          type="password"
+          icon={<LockKeyhole />}
+        />
+        <div className="min-w-full mt-6">
+          <Button 
+            type="submit" 
+            className={`${isLoginLoading ? "bg-gray-400" : ""} text-white w-full px-4 py-2 rounded-md`} 
+            disabled={isLoginLoading}
+          >
+            {isLoginLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+          </Button>
         </div>
       </div>
-
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Checkbox id="remember" />
-          <Label htmlFor="remember" className="text-sm">
-            Recordarme
-          </Label>
-        </div>
-        <Button variant="link" className="px-0 font-normal" size="sm">
-          ¿Olvidaste tu contraseña?
-        </Button>
-      </div>
-
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
-      </Button>
-    </form>
+    </FormProvider> 
+    </div>
   )
 }
 

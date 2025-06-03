@@ -1,16 +1,28 @@
 import { render, screen } from '@testing-library/react'
 import LoginPage from '@/app/(auth)/login/page'
 
+jest.mock('next/headers', () => ({
+  cookies: () => ({
+    get: () => null
+  })
+}))
+
 jest.mock('@/components/auth/login-form', () => ({
   LoginForm: () => <div data-testid="login-form">LoginForm</div>,
 }))
 
-describe('LoginPage', () => {
-  it('renderiza el encabezado y el formulario de login', () => {
-    render(<LoginPage />)
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: any) => <img {...props} />
+}))
 
-    expect(screen.getByText('Bienvenido')).toBeInTheDocument()
-    expect(screen.getByText('Inicia sesión para continuar')).toBeInTheDocument()
+describe('LoginPage', () => {
+  it('renderiza el encabezado y el formulario de login', async () => {
+    const LoginPageComponent = await LoginPage()
+    render(LoginPageComponent)
+
+    const text = screen.getByText('Inicia sesión para continuar')
+    expect(text).toBeInTheDocument()
     expect(screen.getByTestId('login-form')).toBeInTheDocument()
   })
 })

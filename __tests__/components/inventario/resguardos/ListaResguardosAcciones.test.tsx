@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ListaResguardosAcciones from "@/components/inventario/resguardos/ListaResguardosAcciones";
-import { Resguardo } from "@/services/api/inventario-computo/models/Resguardos";
+import { Resguardo, ResguardoStatus } from "@/services/api/inventario-computo/models/Resguardos";
 import * as hooks from "@/hooks/inventario/resguardos/useCreateEditResguardos";
 import renderWithClient from "../../../__mock__/QueryClientProvider";
 
@@ -28,7 +28,7 @@ describe("AccionesListaResguardos", () => {
     empleadoId: 101,
     empleado: "John Doe",
     notas: "Test notes",
-    estatus: "Pendiente",
+    estatus: ResguardoStatus.Pendiente,
     createdBy: "admin",
     modifiedBy: "admin",
     fecha: new Date("2023-05-10"),
@@ -58,7 +58,7 @@ describe("AccionesListaResguardos", () => {
   it('muestra "Actualizar" solo cuando el estado es "Desactualizado"', () => {
     const desactualizadoResguardo = {
       ...mockResguardo,
-      estatus: "Desactualizado",
+      estatus: ResguardoStatus.Desactualizado,
     };
 
     renderWithClient(<ListaResguardosAcciones resguardo={desactualizadoResguardo} />);
@@ -68,7 +68,7 @@ describe("AccionesListaResguardos", () => {
   it('llama a actualizarResguardo al hacer clic en "Actualizar"', async () => {
     const desactualizadoResguardo = {
       ...mockResguardo,
-      estatus: "Desactualizado",
+      estatus: ResguardoStatus.Desactualizado,
     };
 
     renderWithClient(<ListaResguardosAcciones resguardo={desactualizadoResguardo} />);

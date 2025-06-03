@@ -1,29 +1,39 @@
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-
-interface UserData {
-  name: string
-  email: string
-}
+import { create } from 'zustand';
+import { API } from '@/services/api/API';
+import { User } from '@/services/api/auth/model/Authorization';
+import { createJSONStorage, persist } from 'zustand/middleware';  
 
 interface AuthState {
-  isAuthenticated: boolean
-  userData: UserData | null
-  login: (userData: UserData) => void
-  logout: () => void
+  isAuthenticated: boolean;
+  user: User | null;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+  setAuthenticated: (value: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      isAuthenticated: false,
-      userData: null,
-      login: (userData: UserData) => set({ isAuthenticated: true, userData }),
-      logout: () => set({ isAuthenticated: false, userData: null }),
-    }),
+  persist((set) => ({
+    isAuthenticated: false,
+    user: null,
+    setUser: (user: User) => set({ user, isAuthenticated: true }),
+    setAuthenticated: (value: boolean) => set({ isAuthenticated: value }),
+    clearUser: async () => {
+      try {
+        await API.auth.logOff();
+      } catch (error) {
+        console.error('Error during logout:', error);
+      } finally {
+        set({ user: null, isAuthenticated: false });
+      }
+    },
+  }),
     {
-      name: 'auth-storage',
+      name: 'auth-store',
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ 
+        user: state.user,
+        isAuthenticated: state.isAuthenticated 
+      })
     }
   )
 )

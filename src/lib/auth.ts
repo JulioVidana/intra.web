@@ -21,7 +21,7 @@ export async function checkAuth() {
 
       if (response.ok) {
         const userData = await response.json()
-        useAuthStore.getState().login(userData)
+        useAuthStore.getState().setUser(userData)
         return userData
       }
     } catch (error) {

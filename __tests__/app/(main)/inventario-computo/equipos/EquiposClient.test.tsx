@@ -1,7 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import EquiposClient from '@/app/(main)/inventario-computo/equipos/EquiposClient'
-import { QueryClientProvider } from '@tanstack/react-query';
-import { QueryClient } from '@tanstack/react-query';
 import renderWithClient from '../../../../__mock__/QueryClientProvider';
 
 

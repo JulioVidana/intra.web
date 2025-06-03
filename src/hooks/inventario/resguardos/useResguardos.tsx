@@ -17,7 +17,7 @@ export function useResguardos(resguardoId?: number) {
     const [search, setSearch] = useState<string>('')
     const debouncedSearch = useDebounce(search, 200);
 
-    const { data, isLoading, error } = useQuery<GetResguardosResponse, Error>({
+    const { data,  error, isLoading } = useQuery<GetResguardosResponse, Error>({
         queryKey: ["catResguardos", pagination.pageNumber, pagination.pageSize, debouncedSearch],
         queryFn: () => API.inventarioComputo.getResguardos(
             pagination.pageNumber + 1,
@@ -30,7 +30,7 @@ export function useResguardos(resguardoId?: number) {
     const { data: resguardoDetalles, isLoading: isLoadingResguardoDetalles, error: errorResguardoDetalles, refetch: refetchResguardoDetalles } = useQuery<GetResguardoByIdResponse, Error>({
         queryKey: ["catResguardoDetalles", resguardoId],
         queryFn: () => API.inventarioComputo.getResguardoDetalles(resguardoId ?? 0),
-        enabled: !!resguardoId,
+        enabled: false,
     })
 
     const resguardosData = data?.data || [] as Resguardo[]

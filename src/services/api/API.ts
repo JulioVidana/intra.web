@@ -26,9 +26,11 @@ import { getResguardoHistorial } from "./inventario-computo/methods/get-resguard
 import { postUploadFile } from "./inventario-computo/methods/post-upload-file";
 import { deleteFile } from "./inventario-computo/methods/delete-file";
 import { downloadFile } from "./inventario-computo/methods/download-file";
+import { logOff } from "./auth/methods/log-off";
 export const API = {
     auth: {
-        authenticate
+        authenticate,
+        logOff
     },
     inventarioComputo: {
         getTipoEquipos,
@@ -61,6 +63,6 @@ export const API = {
     file: {
         postUploadFile,
         deleteFile,
-        downloadFile
+        downloadFile,
     }
 }
