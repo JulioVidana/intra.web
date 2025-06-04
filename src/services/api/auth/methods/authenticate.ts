@@ -3,6 +3,6 @@ import  ApiClient  from "../../ApiClient";
 import { LoginResponse } from "../schema/AuthenticateResponse";
 
 export const authenticate = async (body:AuthenticationRequest):Promise<LoginResponse> => {
-    const res = await ApiClient.getInstance().post('/Account/SignIn', body)
+    const res = await ApiClient.getInstance().post('/Account/Login', body)
     return res.data
 }
