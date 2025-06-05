@@ -43,13 +43,19 @@ export default function useAuth() {
         className: toastVariants({ variant: "error" }),
         description: error?.message || "Ocurrió un error al iniciar sesión",
       });
+      clearUser();
     }
   });
 
-  const handleLogout = () => {
-    clearUser();
-    router.push('/login');
-  };
+  const handleLogout = async () => {
+    try {
+      await clearUser()
+      router.push('/login')
+    } catch (error) {
+      console.error('Error durante el logout:', error)
+      router.push('/login')
+    }
+  }
   
   const onSubmit = (data: AuthFormData) => {
     const datos: AuthenticationRequest = {

@@ -1,7 +1,6 @@
 import { useAuthStore } from '@/store/authStore'
 
 export async function checkAuth() {
- 
   if (typeof window === 'undefined') {
     return null
   }
@@ -11,23 +10,12 @@ export async function checkAuth() {
   const authCookie = cookies.find(cookie => cookie.trim().startsWith(`${cookieName}=`))
 
   if (authCookie) {
-    try {
-    
-      const response = await fetch('/api/me', {
-        headers: {
-          'Authorization': `Bearer ${authCookie.split('=')[1]}`
-        }
-      })
-
-      if (response.ok) {
-        const userData = await response.json()
-        useAuthStore.getState().setUser(userData)
-        return userData
-      }
-    } catch (error) {
-      console.error('Error al verificar autenticación:', error)
+    const store = useAuthStore.getState()
+    if (store.user) {
+      return store.user
     }
   }
 
+  useAuthStore.getState().clearUser()
   return null
-} 
+}

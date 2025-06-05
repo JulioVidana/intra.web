@@ -7,7 +7,10 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Auth - Intranet",
+  title: {
+    default: "Intranet ISAF",
+    template: "%s | Intranet ISAF",
+  },
   description: "Autenticación de Intranet",
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PATH_PAGE } from "@/routes/paths";
 import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -58,7 +58,6 @@ export default function ResguardosClient() {
     setOpenModalDelete(true);
     setAsignacionSelected(asignacion);
   }
-
   return (
     <>
       <PageHeader

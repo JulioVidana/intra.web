@@ -44,7 +44,7 @@ export function LoginForm() {
         <div className="min-w-full mt-6">
           <Button 
             type="submit" 
-            className={`${isLoginLoading ? "bg-gray-400" : ""} text-white w-full px-4 py-2 rounded-md`} 
+            className={`${isLoginLoading ? "bg-gray-400" : ""} text-white w-full px-4 py-2 rounded-md cursor-pointer`} 
             disabled={isLoginLoading}
           >
             {isLoginLoading ? "Iniciando sesión..." : "Iniciar sesión"}

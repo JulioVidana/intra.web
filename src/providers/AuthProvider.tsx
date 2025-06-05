@@ -1,23 +1,50 @@
 "use client"
-import { useEffect } from 'react'
-import { checkAuth } from '@/lib/auth'
+import { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
+import { useRouter } from 'next/navigation'
+import { API } from '@/services/api/API'
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, setUser } = useAuthStore()
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    let mounted = true
 
-    if (!isAuthenticated) {
-      checkAuth()
-        .then(userData => {
-          console.log('Autenticación verificada:', userData ? 'Usuario autenticado' : 'No autenticado')
-        })
-        .catch(error => {
-          console.error('Error al verificar autenticación:', error)
-        })
+    const verifyAuth = async () => {
+      try {
+        const response = await API.auth.verifyAuth()
+        
+        if (mounted) {
+          if (response?.success) {
+            setUser(response.user)
+          } else if (window.location.pathname !== '/login') {
+            router.push('/login')
+          }
+        }
+      } catch (error) {
+        console.error('Error al verificar autenticación:', error)
+        if (mounted && window.location.pathname !== '/login') {
+          router.push('/login')
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false)
+        }
+      }
     }
-  }, [isAuthenticated])
+
+    verifyAuth()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  if (isLoading) {
+    return null // o un componente de loading
+  }
 
   return <>{children}</>
-} 
+}

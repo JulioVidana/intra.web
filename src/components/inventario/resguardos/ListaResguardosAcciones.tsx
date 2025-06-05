@@ -15,14 +15,13 @@ import { pdf } from "@react-pdf/renderer";
 import DocumentoResguardo from "@/reports/inventario-computo/documento-resguardo";
 import { useResguardos } from "@/hooks/inventario/resguardos/useResguardos";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { API } from "@/services/api/API";
 
 export default function ListaResguardosAcciones({ resguardo }: { resguardo: Resguardo }) {
   const [isLoading, setIsLoading] = useState(false);
   const { actualizarResguardo } = useCreateEditResguardos();
 
-  const { refetchResguardoDetalles } = useResguardos(resguardo.id);
+  const { handleRefetchResguardoDetalles, resguardoDetallesData, handlePrint } = useResguardos();
 
   const { 
     data: resguardoHistorial, 
@@ -38,22 +37,7 @@ export default function ListaResguardosAcciones({ resguardo }: { resguardo: Resg
     await refetch(); 
   };
 
-  const handlePrint = async () => {
-    try {
-      setIsLoading(true);
-      const result = await refetchResguardoDetalles();
-      const blob = await pdf(
-        <DocumentoResguardo resguardo={result?.data?.data || resguardo} />
-      ).toBlob();
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-    } catch (error) {
 
-
-    } finally {
-      setIsLoading(false);
-    }
-  };
   
   return (
     <>
@@ -65,7 +49,7 @@ export default function ListaResguardosAcciones({ resguardo }: { resguardo: Resg
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={handlePrint} disabled={isLoading}>
+          <DropdownMenuItem onClick={() => handlePrint(resguardo.id)} disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (

@@ -5,9 +5,9 @@ import { toastVariants } from "@/components/ui/sonner";
 import { useState } from "react";
 import { Resguardo, ResguardoStatus } from "@/services/api/inventario-computo/models/Resguardos";
 import { SearchItem } from "@/components/ui/sarch-dialog";
+import { useAuthStore } from "@/store/authStore";
 export function useCreateEditResguardos(onSuccess?: () => void, isEdit?: boolean) {
-    
-
+    const userId = useAuthStore((state) => state.user?.Id ?? '0')
   const queryClient = useQueryClient();
   const [openModal, setOpenModal] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -17,7 +17,7 @@ export function useCreateEditResguardos(onSuccess?: () => void, isEdit?: boolean
 
 
   const { mutate: saveResguardo, isPending, error } = useMutation({
-    mutationFn: (resguardo: SearchItem) => API.inventarioComputo.postResguardos(resguardo),
+    mutationFn: (resguardo: SearchItem) => API.inventarioComputo.postResguardos(resguardo,userId),
     onSuccess: (data) => {
       if (data.isSuccess) {
         toast.success("Resguardo guardado con éxito", {

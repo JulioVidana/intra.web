@@ -52,7 +52,7 @@ export default function AccountPopover({ handleLogout, user }: Props) {
 
   return (
     <Menu as="div" className="relative">
-      <MenuButton className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-50 transition-colors duration-200">
+      <MenuButton className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
         <div className="flex flex-col items-end text-right">
           <span className="text-sm font-medium text-gray-900 truncate max-w-32">{fullName}</span>
           <span className="text-xs text-gray-500 truncate max-w-32">{user?.Email || ""}</span>
@@ -109,7 +109,7 @@ export default function AccountPopover({ handleLogout, user }: Props) {
                   <Button
                     variant="ghost"
                     onClick={handleLogout}
-                    className={`w-full justify-start gap-2 h-9 text-red-600 hover:text-red-700 hover:bg-red-50 ${
+                    className={`w-full justify-start gap-2 h-9 text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer ${
                       focus ? "bg-red-50 text-red-700" : ""
                     }`}
                   >

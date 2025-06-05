@@ -29,15 +29,21 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FileUploader } from "@/components/common/file-uploader"
 import { useCreateEditResguardos } from "@/hooks/inventario/resguardos/useCreateEditResguardos"
 import { ResguardoStatus } from "@/services/api/inventario-computo/models/Resguardos"
+import { useAuthStore } from "@/store/authStore"
 export default function ResguardoDetails({ resguardoId, status, onClose }: { resguardoId: number, status?: string , onClose?: () => void}) {
-  const { resguardoDetallesData, isLoadingResguardoDetalles, errorResguardoDetalles, refetchResguardoDetalles } = useResguardos(resguardoId)
+  const { resguardoDetallesData, isLoadingResguardoDetalles, errorResguardoDetalles, refetchResguardoDetalles, handleRefetchResguardoDetalles, handlePrint } = useResguardos()
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false)
-  const { handleUploadFile, actualizarResguardo } = useCreateEditResguardos();
+  const { handleUploadFile, actualizarResguardo, modificarResguardo } = useCreateEditResguardos();
+  const [editNotas, setEditNotas] = useState(false)
+  const [tempNotas, setTempNotas] = useState("")
 
+  useEffect(() => {
+    handleRefetchResguardoDetalles(resguardoId)
+  }, [resguardoId])
  
   if (isLoadingResguardoDetalles) {
     return (
@@ -110,7 +116,7 @@ export default function ResguardoDetails({ resguardoId, status, onClose }: { res
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Left Section - Main Info */}
         <div className="flex items-center gap-4">
-          <div className="bg-primary p-3 rounded-xl shadow-md flex-shrink-0">
+          <div className="bg-primary p-3 rounded-xl shadow-md flex-shrink-0 cursor-pointer" onClick={() => handlePrint(resguardoId)}>
             <Clipboard className="h-6 w-6 text-white" />
           </div>
           <div className="min-w-0">
@@ -290,33 +296,72 @@ export default function ResguardoDetails({ resguardoId, status, onClose }: { res
                     <FileText className="h-4 w-4 text-primary" />
                     <CardTitle className="text-sm font-medium text-gray-700">Notas</CardTitle>
                   </div>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full hover:bg-gray-200">
-                          <Pencil className="h-4 w-4 text-gray-600" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{resguardoDetallesData?.notas ? "Editar notas" : "Agregar notas"}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  {editNotas ? (
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => setEditNotas(false)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        size="sm"
+                        onClick={async () => {
+                          if (resguardoDetallesData) {
+                            await modificarResguardo({
+                              ...resguardoDetallesData,
+                              notas: tempNotas,
+                            });
+                            await refetchResguardoDetalles();
+                            setEditNotas(false);
+                          }
+                        }}
+                        className="bg-primary text-white hover:bg-primary/90"
+                      >
+                        Guardar
+                      </Button>
+                    </div>
+                  ) : (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild onClick={() => setEditNotas(true)}>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full hover:bg-gray-200">
+                            <Pencil className="h-4 w-4 text-gray-600" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{resguardoDetallesData?.notas ? "Editar notas" : "Agregar notas"}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="p-4">
-                {resguardoDetallesData?.notas ? (
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-inner">
-                    <p className="text-sm whitespace-pre-line text-gray-700 leading-relaxed">
-                      {resguardoDetallesData.notas}
-                    </p>
-                  </div>
+                {editNotas ? (
+                  <textarea
+                    className="w-full min-h-[150px] p-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                    placeholder="Escriba las notas aquí..."
+                    value={tempNotas}
+                    onChange={(e) => setTempNotas(e.target.value)}
+                  />
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                    <FileText className="h-8 w-8 text-gray-300 mb-2" />
-                    <p className="text-gray-600 font-medium">No hay notas disponibles</p>
-                    <p className="text-gray-400 text-xs mt-1">Haga clic en el ícono de lápiz para agregar</p>
-                  </div>
+                  resguardoDetallesData?.notas ? (
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-inner">
+                      <p className="text-sm whitespace-pre-line text-gray-700 leading-relaxed">
+                        {resguardoDetallesData.notas}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                      <FileText className="h-8 w-8 text-gray-300 mb-2" />
+                      <p className="text-gray-600 font-medium">No hay notas disponibles</p>
+                      <p className="text-gray-400 text-xs mt-1">Haga clic en el ícono de lápiz para agregar</p>
+                    </div>
+                  )
                 )}
               </CardContent>
             </Card>

@@ -27,10 +27,13 @@ import { postUploadFile } from "./inventario-computo/methods/post-upload-file";
 import { deleteFile } from "./inventario-computo/methods/delete-file";
 import { downloadFile } from "./inventario-computo/methods/download-file";
 import { logOff } from "./auth/methods/log-off";
+import { verifyAuth } from "./auth/methods/verifyAuth";
+
 export const API = {
     auth: {
         authenticate,
-        logOff
+        logOff,
+        verifyAuth
     },
     inventarioComputo: {
         getTipoEquipos,
