@@ -4,7 +4,7 @@ export function middleware(req: NextRequest) {
   const cookieName = 'intisafsonjack';
   const cookie = req.cookies.get(cookieName);
   const isAuthPage = req.nextUrl.pathname === '/login';
-
+  console.log(cookie)
   //if (!cookie?.value && !isAuthPage) {
     //return NextResponse.redirect(new URL('/login', req.url));
   //}
