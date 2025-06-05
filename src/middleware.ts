@@ -5,13 +5,13 @@ export function middleware(req: NextRequest) {
   const cookie = req.cookies.get(cookieName);
   const isAuthPage = req.nextUrl.pathname === '/login';
 
-  if (!cookie?.value && !isAuthPage) {
-    return NextResponse.redirect(new URL('/login', req.url));
-  }
+  //if (!cookie?.value && !isAuthPage) {
+    //return NextResponse.redirect(new URL('/login', req.url));
+  //}
 
-  if (cookie?.value && isAuthPage) {
-    return NextResponse.redirect(new URL('/', req.url));
-  }
+  //if (cookie?.value && isAuthPage) {
+    //return NextResponse.redirect(new URL('/', req.url));
+  //}
 
   return NextResponse.next();
 }
